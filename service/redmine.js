@@ -183,7 +183,7 @@ module.exports = class RedmineService {
         title: `${index + 1}. #${item.issue.id} ${item.issue.subject}`,
         link: `${process.env.REDMINE_HOST}/issues/${item.issue.id}`,
         subject: item.issue.subject,
-        executor: item.issue.custom_fields.find((f) => f.id === 5).value,
+        executor: item.issue.custom_fields?.find((f) => f.id === 5).value,
       });
       formatChildren(_tree, item.issue, 0);
       return _tree;

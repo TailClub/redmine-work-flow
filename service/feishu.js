@@ -67,7 +67,7 @@ module.exports = class FeiShuService {
             link: item.link,
           },
           任务执行人: item.executor.map((id) => {
-            return { id: Feishu[id] };
+            return { id: Feishu.Users[id] };
           }),
           进展: "待开始",
           重要紧急程度: "重要不紧急",
