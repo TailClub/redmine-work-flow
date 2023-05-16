@@ -14,7 +14,7 @@ module.exports = class RedmineService {
 
   watchers = Watchers;
 
-  project_id = Project.ypbk;
+  project_id = Project;
 
   _isCloseAction = true;
 
