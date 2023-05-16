@@ -1,0 +1,25 @@
+{
+  "name": "redmine-work-flow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "bin": {
+    "redmine": "index.js"
+  },
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "node ./test/test.js",
+    "test:redmine": "node ./test/test.redmine.js",
+    "test:feishu": "node ./test/test.feishu.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@larksuiteoapi/node-sdk": "^1.16.0",
+    "dotenv": "^16.0.3",
+    "inquirer": "^8.2.5",
+    "request": "^2.88.2",
+    "yargs": "^17.7.2"
+  }
+}
