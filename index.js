@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 const dotenv = require("dotenv");
-dotenv.config();
 const Path = require("node:path");
+const envFilePath = Path.resolve(__dirname, ".env");
+dotenv.config({ path: envFilePath });
 const yargs = require("yargs/yargs");
 const inquirer = require("inquirer");
 const { writeFileSync } = require("node:fs");
@@ -29,7 +30,6 @@ yargs(process.argv.slice(2))
     });
 
     inquirer.prompt(promptList).then((answers) => {
-      const envFilePath = Path.resolve(__dirname, ".env");
       let template = [];
       for (const key in answers) {
         if (Object.hasOwnProperty.call(answers, key)) {
