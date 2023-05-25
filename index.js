@@ -41,7 +41,7 @@ yargs(process.argv.slice(2))
   })
   .command(
     "a",
-    "归档Issue到对应Target，并同步到飞书TASK！",
+    "归档Issue到对应Target",
     (yargs) => {
       return yargs.options({
         issue: {
@@ -54,6 +54,11 @@ yargs(process.argv.slice(2))
           describe: "迁移的Target号",
           demandOption: true,
         },
+        increase: {
+          alias: "n",
+          describe: "是否为新增",
+          demandOption: false,
+        },
       });
     },
     async (argv) => {
@@ -62,7 +67,11 @@ yargs(process.argv.slice(2))
         .split(",")
         .map((item) => Number(item.trim()))
         .filter((item) => !!item);
-      await new RedmineService().archiveIssuesByVersion(issues, argv.target);
+      await new RedmineService().archiveIssuesByVersion(
+        issues,
+        argv.target,
+        argv.increase
+      );
     }
   )
   .command(

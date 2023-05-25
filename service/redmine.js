@@ -18,6 +18,8 @@ module.exports = class RedmineService {
 
   _isCloseAction = true;
 
+  _issue_tracker_ids = `${Tracker.optimization}|${Tracker.requirement}|${Tracker.performance}|${Tracker.production}`;
+
   constructor() {
     this.redmine = new Redmine(process.env.REDMINE_HOST, {
       apiKey: process.env.REDMINE_APIKEY,
@@ -195,51 +197,94 @@ module.exports = class RedmineService {
   }
 
   /**
-   *
-   * @param {number[]} issue_ids [699]
+   * 获取上线计划中包含的Issue
    * @param {string} version_name
    * @returns
    */
-  async archiveIssuesByVersion(issue_ids, version_name) {
+  async _getDeploymnetIssuesByVersion(version_name) {
+    let [version] = await this.getVersionByName(version_name);
+    if (version.id) {
+      const { issues } = await this.getIssues({
+        fixed_version_id: version.id,
+        tracker_id: this._issue_tracker_ids,
+      });
+      const result = issues.map((item) => item.id);
+      console.log("[PLAN][ISSUE_IDS]", result.join(","));
+      return result;
+    } else {
+      console.log("[PLAN][NOTHING]");
+      return "";
+    }
+  }
+
+  /**
+   *
+   * @param {number[]} issue_ids [699]
+   * @param {string} version_name
+   * @param {boolean} increase 是否为新增
+   * @returns
+   */
+  async archiveIssuesByVersion(issue_ids, version_name, increase) {
+    if (increase) {
+      console.log("[ARCHIVE][INCREASING][FROM]", issue_ids.join(","));
+      const _list = await this._getDeploymnetIssuesByVersion(version_name);
+      if (_list.length) {
+        const _s = new Set(issue_ids.concat(_list));
+        issue_ids = Array.from(_s);
+      }
+      console.log("[ARCHIVE][INCREASING][TO]", issue_ids.join(","));
+    }
+
     // 遍历需求下的功能，生成ID树
     console.log("[ARCHIVE][GENERATING]");
     const { issuesTree, issuesRecord } = await this.getIssuesTreeAndRecord(
       issue_ids
     );
 
-    // console.log(JSON.stringify(issuesRecord, null, 2))
-    // return 200
+    if (issuesTree.length) {
+      // console.log(JSON.stringify(issuesRecord, null, 2))
+      // return 200
 
-    // 生成版本内容
-    const description = issuesRecord.map((item) => item.title).join("\n");
+      // 生成版本内容
+      const description = issuesRecord.map((item) => item.title).join("\n");
 
-    // 获取归档的版本ID
-    console.log("[ARCHIVE][CHECKING]");
-    const version_id = await this._setArchiveVersion(version_name, description);
+      // 获取归档的版本ID
+      console.log("[ARCHIVE][CHECKING]");
+      const version_id = await this._setArchiveVersion(
+        version_name,
+        description
+      );
 
-    // 把所有issue顺序移动到version下
-    await Promise.all(
-      issuesTree.map(async (item) => {
-        let i = item.length - 1;
-        while (i >= 0) {
-          await Promise.all(
-            item[i].map(async (id) => {
-              console.log(`[ARCHIVE][UPDAING][#${id}]`);
-              return await this.updateIssue(id, {
-                fixed_version_id: version_id,
-              });
-            })
-          );
-          i--;
-        }
-      })
-    );
+      // 把所有issue顺序移动到version下
+      await Promise.all(
+        issuesTree.map(async (item) => {
+          let i = item.length - 1;
+          while (i >= 0) {
+            await Promise.all(
+              item[i].map(async (id) => {
+                console.log(`[ARCHIVE][UPDAING][#${id}]`);
+                return await this.updateIssue(id, {
+                  fixed_version_id: version_id,
+                });
+              })
+            );
+            i--;
+          }
+        })
+      );
 
-    // 创建上线计划
-    console.log(`[ARCHIVE][PLANING]`);
-    await this._setArchiveIssueByVersion(version_id, version_name, description);
+      // 创建上线计划
+      console.log(`[ARCHIVE][PLANING]`);
+      await this._setArchiveIssueByVersion(
+        version_id,
+        version_name,
+        description
+      );
 
-    console.log("[ARCHIVE][SUCCESS]");
+      console.log("[ARCHIVE][SUCCESS]");
+    } else {
+      console.log("[ARCHIVE][NOTHING]");
+    }
   }
 
   /**
@@ -249,7 +294,7 @@ module.exports = class RedmineService {
   async _toggleIssuesByVersion(version_id, status) {
     const { issues: requirements } = await this.getIssues({
       fixed_version_id: version_id,
-      tracker_id: Tracker.requirement,
+      tracker_id: this._issue_tracker_ids,
       status_id: this._isCloseAction ? "open" : "closed",
     });
     if (requirements.length) {
