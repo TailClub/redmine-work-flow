@@ -9,7 +9,7 @@
 
 ```
   redmine init         初始化配置
-  redmine archive | a  归档Issue到对应Target，并同步到飞书TASK！
+  redmine archive | a  归档Issue到对应Target，并同步到飞书TASK
   redmine open | o     打开Target及下属Issue
   redmine close | c    关闭Target及下属Issue
 ```
@@ -29,7 +29,10 @@ redmine c -t 3.2.2023-12-12
 redmine o -t 3.2.2023-12-12
 
 // 创建版本3.2.2023-12-12，归档相关需求，创建上线计划，
-redmine a -i  -t 3.2.2023-12-12
+redmine a -i 19818,19819,19900 -t 3.2.2023-12-12
+
+// 如果已经存在3.2.2023-12-12，可使用 -n 来把19911更新到该版本，避免走重新创建的流程
+redmine a -i 19911 -t 3.2.2023-12-12 -n
 
 // 同步需求功能到飞书任务管理看板
 redmine s -i 19818,19819,19900
