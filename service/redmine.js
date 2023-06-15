@@ -151,13 +151,13 @@ module.exports = class RedmineService {
   async _setArchiveIssueByVersion(version_id, version_name, description) {
     const subject = `${version_name} 上线计划`;
     const { issues } = await this.getIssues({
-      tracker_id: Tracker.deployment,
+      tracker_id: Tracker.plan,
       subject,
     });
     const params = {
       project_id: this.project_id,
       subject,
-      tracker_id: Tracker.deployment,
+      tracker_id: Tracker.plan,
       description,
       fixed_version_id: version_id,
       assigned_to_id: this.assignee,

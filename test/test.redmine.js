@@ -1,9 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const RedmineService = require("../service/redmine.js");
-const {
-  Redmine: { Watchers, Assignee, Project, Tracker },
-} = require("../lib/config.js");
 
 (async () => {
   const redmine = new RedmineService();
