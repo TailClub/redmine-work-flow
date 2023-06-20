@@ -246,7 +246,7 @@ module.exports = class RedmineService {
       // return 200
 
       // 生成版本内容
-      const description = issuesRecord.map((item) => item.title).join("\n");
+      const description = issuesRecord.map((item) => item.title).join(" \n");
 
       // 获取归档的版本ID
       console.log("[ARCHIVE][CHECKING]");
