@@ -1,5 +1,5 @@
 const lark = require("@larksuiteoapi/node-sdk");
-const { Feishu } = require("../lib/config.js");
+const { Feishu, Redmine } = require("../lib/config.js");
 const RedmineService = require("./redmine.js");
 
 module.exports = class FeiShuService {
@@ -66,9 +66,11 @@ module.exports = class FeiShuService {
             text: item.subject,
             link: item.link,
           },
-          任务执行人: item.executor.map((id) => {
-            return { id: Feishu.Users[id] };
-          }),
+          任务执行人: item.executor
+            ? item.executor.map((id) => {
+                return { id: Feishu.Users[id] };
+              })
+            : [{ id: Feishu.Users.default }],
           进展: "待开始",
           重要紧急程度: "重要不紧急",
         },
