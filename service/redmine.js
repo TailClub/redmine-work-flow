@@ -18,7 +18,7 @@ module.exports = class RedmineService {
 
   _isCloseAction = true;
 
-  _issue_tracker_ids = `${Tracker.optimization}|${Tracker.requirement}|${Tracker.performance}|${Tracker.production}`;
+  _issue_tracker_ids = `${Tracker.optimization}|${Tracker.requirement}|${Tracker.performance}|${Tracker.production}|${Tracker.support}|${Tracker.prodBug}`;
 
   constructor() {
     this.redmine = new Redmine(process.env.REDMINE_HOST, {
