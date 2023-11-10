@@ -297,13 +297,12 @@ module.exports = class RedmineService {
       tracker_id: this._issue_tracker_ids,
       status_id: this._isCloseAction ? "open" : "closed",
     });
-    if (requirements.length) {
+    if (requirements?.length) {
       const issues = await Promise.all(
         requirements.map((r) =>
           this.redmine.get_issue_by_id(r.id, { include: "children,relations" })
         )
       );
-
       const issuesTree = issues.map((item, index) => {
         let _tree = [];
         formatChildren(_tree, item.issue, 0);
@@ -350,7 +349,7 @@ module.exports = class RedmineService {
       fixed_version_id: version_id,
       status_id: this._isCloseAction ? "open" : "closed",
     });
-    if (issues.length) {
+    if (issues?.length) {
       await Promise.all(
         issues
           .map((i) => i.id)

@@ -94,7 +94,7 @@ yargs(process.argv.slice(2))
     (yargs) => {
       return yargs.option("target", {
         alias: "t",
-        describe: "Issue编号，多个以英文逗号分隔",
+        describe: "版本号",
         demandOption: true,
       });
     },

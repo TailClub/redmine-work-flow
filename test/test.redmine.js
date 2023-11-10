@@ -6,7 +6,7 @@ const RedmineService = require("../service/redmine.js");
   const redmine = new RedmineService();
   const status = { close: 1, open: 2 };
   // await redmine.archiveIssuesByVersion([19818, 19819], "3.2.2023-12-12");
-  // await redmine.toggleIssueAndVersion("3.2.2023-12-12", status.close);
+  await redmine.toggleIssueAndVersion("3.2.2023-11-09", status.close);
   // await redmine.toggleIssueAndVersion("3.2.2023-12-12", status.open);
 
   // const { issues } = await redmine.getIssues({
@@ -16,5 +16,5 @@ const RedmineService = require("../service/redmine.js");
   // });
   // console.log(issues);
 
-  await redmine.getDeploymnetIssuesByVersion("3.2.2023-05-29");
+  // await redmine.getDeploymnetIssuesByVersion("3.2.2023-05-29");
 })();
