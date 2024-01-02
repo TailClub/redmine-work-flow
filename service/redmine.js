@@ -134,7 +134,7 @@ module.exports = class RedmineService {
     let [version] = await this.getVersionByName(version_name);
     const params = {
       name: version_name,
-      description,
+      // description,
     };
     const data = version
       ? await this.updateVersion(version.id, params)

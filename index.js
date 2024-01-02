@@ -85,7 +85,10 @@ yargs(process.argv.slice(2))
       });
     },
     async (argv) => {
-      await new RedmineService().toggleIssueAndVersion(argv.target, 2);
+      await new RedmineService().toggleIssueAndVersion(
+        argv.target.toString(),
+        2
+      );
     }
   )
   .command(
@@ -99,7 +102,10 @@ yargs(process.argv.slice(2))
       });
     },
     async (argv) => {
-      await new RedmineService().toggleIssueAndVersion(argv.target, 1);
+      await new RedmineService().toggleIssueAndVersion(
+        argv.target.toString(),
+        1
+      );
     }
   )
   .command(
