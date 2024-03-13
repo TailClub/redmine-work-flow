@@ -309,35 +309,39 @@ module.exports = class RedmineService {
         return _tree;
       });
 
-      await Promise.all(
-        issuesTree.map(async (item) => {
-          if (this._isCloseAction) {
-            let i = item.length - 1;
-            while (i >= 0) {
-              await Promise.all(
-                item[i].map(async (id) => {
-                  console.log(`[CLOSING] [ISSUE] #${id}`);
-                  await this.updateIssue(id, { status_id: 5 });
-                })
-              );
-              i--;
-            }
-          } else {
-            let i = 0;
-            let l = item.length;
-            while (i < l) {
-              await Promise.all(
-                item[i].map(async (id) => {
-                  console.log(`[OPENING] [ISSUE] #${id}`);
-                  await this.updateIssue(id, { status_id: 1 });
-                })
-              );
-              i++;
-            }
-          }
-        })
-      );
+      await this._toggleIssues(issuesTree);
     }
+  }
+
+  async _toggleIssues(issuesTree) {
+    await Promise.all(
+      issuesTree.map(async (item) => {
+        if (this._isCloseAction) {
+          let i = item.length - 1;
+          while (i >= 0) {
+            await Promise.all(
+              item[i].map(async (id) => {
+                console.log(`[CLOSING] [ISSUE] #${id}`);
+                await this.updateIssue(id, { status_id: 5 });
+              })
+            );
+            i--;
+          }
+        } else {
+          let i = 0;
+          let l = item.length;
+          while (i < l) {
+            await Promise.all(
+              item[i].map(async (id) => {
+                console.log(`[OPENING] [ISSUE] #${id}`);
+                await this.updateIssue(id, { status_id: 1 });
+              })
+            );
+            i++;
+          }
+        }
+      })
+    );
   }
 
   /**
@@ -383,6 +387,20 @@ module.exports = class RedmineService {
         await this.updateVersion(version.id, { status: "closed" });
       }
       console.log(`[${this._isCloseAction ? "CLOSE" : "OPEN"}][SUCCESS]`);
+    }
+  }
+
+  async toggleIssues(issue_ids, status) {
+    // 遍历需求下的功能，生成ID树
+    this._isCloseAction = status === 1;
+    console.log(
+      `Start To [${this._isCloseAction ? "Close" : "Open"}] [ISSUES]`
+    );
+    const { issuesTree } = await this.getIssuesTreeAndRecord(issue_ids);
+    if (issuesTree.length) {
+      await this._toggleIssues(issuesTree);
+    } else {
+      console.log("[Toogle] [ISSUES] [NOTHING]");
     }
   }
 };
